@@ -12,7 +12,7 @@ class Project:
 
     def check_existence_of_folder_project(self):
         
-        tried_path = f'/crecelle-project/utils/load/{self.name}'
+        tried_path = f'/crecerelle-project/utils/load/{self.name}'
         if not os.path.isdir(tried_path):
             print(f"Création du dossier de sauvegarde du projet {self.name}")
             os.makedirs(tried_path)

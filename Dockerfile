@@ -2,11 +2,11 @@ FROM kalilinux/kali-last-release
 
 RUN apt-get update -y && apt-get upgrade -y && apt-get -y install subfinder python3 dnsrecon
 
-WORKDIR /crecelle-project
+WORKDIR /crecerelle-project
 
-COPY crecelle-project/ .
+COPY crecerelle-project/ .
 
-WORKDIR /crecelle-project/utils
+WORKDIR /crecerelle-project/utils
 
 # CMD /bin/bash
 

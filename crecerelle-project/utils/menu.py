@@ -34,7 +34,7 @@ def create_or_load_project():
     
     
     answer = get_input_choice(["1","2"],while_available_answer=False,input_message=first_choice,error_message="Veuillez choisir un nom de projet valide:\n")
-    list_available_project = os.listdir("/crecelle-project/utils/load")
+    list_available_project = os.listdir("/crecerelle-project/utils/load")
     
     match answer:
         case "1":
