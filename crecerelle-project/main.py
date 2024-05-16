@@ -1,24 +1,36 @@
 from utils.project import Project
-from utils import create_or_load_project,kill_chain_step_choice,recon_on_ip_domain
+from utils import create_or_load_project,kill_chain_step_choice,recon_on_ip_domain,banner,choice_load_or_input_ip
 
 print("\033c")
+
+banner()
 
 project_name = create_or_load_project()
 
 project = Project(project_name)
 
-print(project.repertory_path)
-print(project.repertory_content)
 
-answer = kill_chain_step_choice()
+exit = 0
 
-match answer:
-    case "1":
-        recon_on_ip_domain()
-    case "2":
-        print("fin")
+while not exit:
+    answer = kill_chain_step_choice()
+    match answer:
+        case "1":
+            answer_domain_ip = recon_on_ip_domain()
+            match answer_domain_ip:
+                case "1":
+                    domain_name = input("Sélectionnez un nom de domaine: \n")
+                    project.new_subfinder_search(domain_name)
+                    project.get_list_ip_from_subdomain(domain_name)
+        case "2":
+            answer_load_or_input = choice_load_or_input_ip()
 
-# project.new_subfinder_search('company1.com')
+            match answer_domain_ip:
+                case "1":
+                    print("choix 1")
 
+            print("nmap")
+        case "@":
+            exit = 1
 
-
+print("Sortie du programme")

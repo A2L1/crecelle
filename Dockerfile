@@ -6,8 +6,8 @@ WORKDIR /crecerelle-project
 
 COPY crecerelle-project/ .
 
-WORKDIR /crecerelle-project/utils
+WORKDIR /crecerelle-project
 
 # CMD /bin/bash
 
-CMD python3 ../main.py
+CMD python3 main.py
