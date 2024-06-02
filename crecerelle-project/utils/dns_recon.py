@@ -11,23 +11,22 @@ def merge_ip_into_single_file(dir_path):
     dico_ip_per_subdomain = {}
     for file in liste_file_to_merge:
         file_path = f"{dir_path}{file}"
-        print(file_path)
-        with open(file_path) as file:
-            data_file = file.read()
-            if data_file:
-                object_data = '{"data":'+ str(data_file)+'}'
-                data = json.loads(object_data).get('data')
-        if data_file:
-            for elem in data:
-                print(type(elem))
-                if elem['type'] == "A":
-                    ip = elem['address']
 
-                    liste_ip.append(ip)
-                    if ip not in dico_subdomain_per_ip.keys():
-                        dico_subdomain_per_ip[ip] = []
-                    sub_domain = elem['domain']
-                    dico_subdomain_per_ip[ip].append(sub_domain)
+        if not file_path.endswith("_dns_recon_backup.json"):
+            with open(file_path) as file:
+                data_file = file.read()
+                if data_file:
+                    object_data = '{"data":'+ str(data_file)+'}'
+                    data = json.loads(object_data).get('data')
+            if data_file:
+                for elem in data:
+                    if elem['type'] == "A":
+                        ip = elem['address']
+                        liste_ip.append(ip)
+                        if ip not in dico_subdomain_per_ip.keys():
+                            dico_subdomain_per_ip[ip] = []
+                        sub_domain = elem['domain']
+                        dico_subdomain_per_ip[ip].append(sub_domain)
                 
     liste_ip = list(set(liste_ip))
     return dico_subdomain_per_ip

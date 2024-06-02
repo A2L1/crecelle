@@ -39,6 +39,19 @@ class Project:
 
         self.loaded_subdomain = subdomain_list
 
+    def load_ip_sublist_backup(self,domain_name):
+        BLUE = "\033[0;34m"
+        COLOR_OFF = "\033[0m"
+
+        file_path = f"{self.repertory_path}/{domain_name}/dns-recon/{domain_name}_dns_recon_backup.json"
+        
+        with open(file_path,'r') as file:
+            ip_subdomain_obj = json.load(file)
+
+        self.loaded_subdomain_per_ip = ip_subdomain_obj 
+
+        print(f"{BLUE}Le fichier concernant le scan '{domain_name}' est chargé.{COLOR_OFF}")
+
     def new_subfinder_search(self,domain):
         file_path = lauch_subfinder(domain,self.name,self.repertory_path)
         self.load_dns_backup(file_path)

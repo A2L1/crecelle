@@ -118,3 +118,13 @@ def choice_load_or_input_ip():
     answer = get_input_choice(list_available_answer=available_choice.keys(),while_available_answer=False,input_message=print_available_choice)
 
     return answer
+
+def choice_file_to_load(project_name):
+    list_available_scan = os.listdir(f"/crecerelle-project/utils/load/{project_name}")
+    loop_printing_available_scans = "\n".join(f". {project}" for project in list_available_scan) + "\n"
+
+    print("Selectionnez un des scans disponibles: \n")
+
+    selected_scan = get_input_choice(list_available_scan,while_available_answer=False,input_message=loop_printing_available_scans,error_message="Veuillez sélectionner un scan valide")
+
+    return selected_scan

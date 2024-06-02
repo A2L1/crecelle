@@ -1,5 +1,5 @@
 from utils.project import Project
-from utils import create_or_load_project,kill_chain_step_choice,recon_on_ip_domain,banner,choice_load_or_input_ip
+from utils import create_or_load_project,kill_chain_step_choice,recon_on_ip_domain,banner,choice_load_or_input_ip,choice_file_to_load
 
 print("\033c")
 
@@ -25,11 +25,10 @@ while not exit:
         case "2":
             answer_load_or_input = choice_load_or_input_ip()
 
-            match answer_domain_ip:
+            match answer_load_or_input:
                 case "1":
-                    print("choix 1")
-
-            print("nmap")
+                    file_name = choice_file_to_load(project_name=project.name)
+                    project.load_ip_sublist_backup(file_name)
         case "@":
             exit = 1
 
