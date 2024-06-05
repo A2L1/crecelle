@@ -1,6 +1,8 @@
 FROM kalilinux/kali-last-release
 
-RUN apt-get update -y && apt-get upgrade -y && apt-get -y install subfinder python3 dnsrecon
+RUN apt-get update -y && apt-get upgrade -y && apt-get -y install subfinder python3 dnsrecon nmap git xsltproc 
+
+RUN apt-get install -y exploitdb exploitdb-papers exploitdb-bin-sploits
 
 WORKDIR /crecerelle-project
 
@@ -8,6 +10,10 @@ COPY crecerelle-project/ .
 
 WORKDIR /crecerelle-project
 
-# CMD /bin/bash
+RUN setcap cap_net_raw+eip $(which nmap)
 
-CMD python3 main.py
+RUN git clone https://github.com/ernw/nmap-parse-output.git
+
+CMD /bin/bash
+
+# CMD python3 main.py

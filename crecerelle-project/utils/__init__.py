@@ -1,6 +1,7 @@
 from .dns_recon import get_ip_from_sub_domains
 from .sub_domain import lauch_subfinder
 from .menu import create_or_load_project,recon_on_ip_domain,kill_chain_step_choice,banner,choice_load_or_input_ip,choice_file_to_load
+from .nmap import launch_nmap_scan_list,launch_nmap_scan_input
 
 
-__all__=[get_ip_from_sub_domains,lauch_subfinder,create_or_load_project,kill_chain_step_choice,recon_on_ip_domain,banner,choice_load_or_input_ip,choice_file_to_load]
+__all__=[get_ip_from_sub_domains,lauch_subfinder,create_or_load_project,kill_chain_step_choice,recon_on_ip_domain,banner,choice_load_or_input_ip,choice_file_to_load,launch_nmap_scan_list,launch_nmap_scan_input]

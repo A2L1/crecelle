@@ -1,14 +1,15 @@
-from utils import (get_ip_from_sub_domains,lauch_subfinder)
+from utils import (get_ip_from_sub_domains,lauch_subfinder,launch_nmap_scan_list,launch_nmap_scan_input)
 import os
 import json
 
 class Project:
     
-    
+
     def __init__(self,name_project):
         self.name = name_project
         self.loaded_subdomain = []
         self.loaded_subdomain_per_ip = {}
+        self.loaded_scan_name_from_subdomain_scan = ""
         self.repertory_content = []
         self.repertory_path = self.check_existence_of_folder_project()
 
@@ -48,7 +49,8 @@ class Project:
         with open(file_path,'r') as file:
             ip_subdomain_obj = json.load(file)
 
-        self.loaded_subdomain_per_ip = ip_subdomain_obj 
+        self.loaded_subdomain_per_ip = ip_subdomain_obj
+        self.loaded_scan_name_from_subdomain_scan = domain_name
 
         print(f"{BLUE}Le fichier concernant le scan '{domain_name}' est chargé.{COLOR_OFF}")
 
@@ -67,3 +69,23 @@ class Project:
         print(f"{BLUE}Le fichier de backup est disponible à ce chemin : {backup_file}{COLOR_OFF}")
         with open(backup_file, 'w', encoding='utf-8') as fichier:
             json.dump(json_subdomain_per_ip, fichier, ensure_ascii=False, indent=4)
+
+    def launch_nmap_scan(self,list_ip_subdomain={},target_ip="",answer_load_or_input={}):
+
+
+
+        match answer_load_or_input:
+            case "1":
+                check_scan = self.loaded_scan_name_from_subdomain_scan
+            case "2":
+                check_scan = target_ip
+
+        if not os.path.isdir(f'{self.repertory_path}/{check_scan}/nmap'):
+            os.makedirs(f'{self.repertory_path}/{check_scan}/nmap')
+
+        
+        match answer_load_or_input:
+            case "1":
+                launch_nmap_scan_list(list_ip_subdomain,scan_name=check_scan,directory_save_path=self.repertory_path)
+            case "2":
+                launch_nmap_scan_input(target_ip,scan_name=check_scan,directory_save_path=self.repertory_path)

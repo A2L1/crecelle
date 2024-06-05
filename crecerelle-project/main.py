@@ -1,3 +1,5 @@
+#!/bin/python3
+
 from utils.project import Project
 from utils import create_or_load_project,kill_chain_step_choice,recon_on_ip_domain,banner,choice_load_or_input_ip,choice_file_to_load
 
@@ -29,6 +31,10 @@ while not exit:
                 case "1":
                     file_name = choice_file_to_load(project_name=project.name)
                     project.load_ip_sublist_backup(file_name)
+                    project.launch_nmap_scan(list_ip_subdomain=project.loaded_subdomain_per_ip,answer_load_or_input=answer_load_or_input)
+                case "2":
+                    ip = input("Saisissez une IP: \n") # à factoriser et vérifier regex d'une ip
+                    project.launch_nmap_scan(target_ip=ip,answer_load_or_input=answer_load_or_input)
         case "@":
             exit = 1
 

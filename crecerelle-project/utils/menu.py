@@ -120,7 +120,16 @@ def choice_load_or_input_ip():
     return answer
 
 def choice_file_to_load(project_name):
-    list_available_scan = os.listdir(f"/crecerelle-project/utils/load/{project_name}")
+
+    path = f"/crecerelle-project/utils/load/{project_name}"
+    existing_available_scan = os.listdir(path)
+
+    list_available_scan = []
+
+    for scan in existing_available_scan:
+        if os.path.exists(f"{path}/{scan}/dns-recon/{scan}_dns_recon_backup.json"):
+            list_available_scan.append(scan)
+
     loop_printing_available_scans = "\n".join(f". {project}" for project in list_available_scan) + "\n"
 
     print("Selectionnez un des scans disponibles: \n")
