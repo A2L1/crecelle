@@ -1,4 +1,4 @@
-from utils import (get_ip_from_sub_domains,lauch_subfinder,launch_nmap_scan_list,launch_nmap_scan_input)
+from utils import (get_ip_from_sub_domains,lauch_subfinder,launch_nmap_scan_list,launch_nmap_scan_input,format_data,launch_searchploit)
 import os
 import json
 
@@ -10,6 +10,9 @@ class Project:
         self.loaded_subdomain = []
         self.loaded_subdomain_per_ip = {}
         self.loaded_scan_name_from_subdomain_scan = ""
+        self.loaded_scan_nmap = {}
+        self.loaded_scan_name_from_nmap_scan = ""
+        self.loaded_scan_path_from_nmap_scan = ""
         self.repertory_content = []
         self.repertory_path = self.check_existence_of_folder_project()
 
@@ -72,13 +75,11 @@ class Project:
 
     def launch_nmap_scan(self,list_ip_subdomain={},target_ip="",answer_load_or_input={}):
 
-
-
         match answer_load_or_input:
             case "1":
                 check_scan = self.loaded_scan_name_from_subdomain_scan
             case "2":
-                check_scan = target_ip
+                check_scan = target_ip.replace("/","-")
 
         if not os.path.isdir(f'{self.repertory_path}/{check_scan}/nmap'):
             os.makedirs(f'{self.repertory_path}/{check_scan}/nmap')
@@ -89,3 +90,27 @@ class Project:
                 launch_nmap_scan_list(list_ip_subdomain,scan_name=check_scan,directory_save_path=self.repertory_path)
             case "2":
                 launch_nmap_scan_input(target_ip,scan_name=check_scan,directory_save_path=self.repertory_path)
+
+    def load_base_searchsploit_data(self,scan):
+        BLUE = "\033[0;34m"
+        COLOR_OFF = "\033[0m"
+
+        file_path = f"{self.repertory_path}/{scan}/nmap/{scan}-nmap.json"
+        
+
+        with open(file_path,'r') as file:
+            port_with_version_per_ip = json.load(file)
+
+        self.loaded_subdomain_per_ip = port_with_version_per_ip
+        self.loaded_scan_name_from_nmap_scan = scan
+        self.loaded_scan_path_from_nmap_scan = file_path
+
+        print(f"{BLUE}Le fichier concernant le scan '{scan}' est chargé.{COLOR_OFF}")
+
+    def launch_searchsploit_scan(self,scan_name):
+        
+        self.load_base_searchsploit_data(scan_name)
+        
+        formated_data = format_data(self.loaded_scan_path_from_nmap_scan)
+
+        launch_searchploit(data=formated_data)

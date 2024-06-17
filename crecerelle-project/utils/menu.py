@@ -2,11 +2,16 @@ import os
 import sys
 import time
 
+def wipe_text(sleep=0.5):
+    time.sleep(sleep)
+    print("\033c")
+
+
 def handle_input(message=""):
     answer = input(message)
-    time.sleep(0.5)
-    print("\033c")
+    wipe_text()
     return answer 
+
 
 def define_condition_to_verify_input(boolean,answer,list_available_answer):
     if boolean:
@@ -89,6 +94,7 @@ def kill_chain_step_choice():
 
     step_kill_chain = {"1":"Reconnaissance",
                        "2":"Enumeration",
+                       "3":"Weaponization",
                        "@":"Sortie du programme"}
     print_step_kill_chain = "\n".join(f"{key}. {step_kill_chain[key]}" for key in step_kill_chain.keys()) + "\n"
 
@@ -129,6 +135,33 @@ def choice_file_to_load(project_name):
     for scan in existing_available_scan:
         if os.path.exists(f"{path}/{scan}/dns-recon/{scan}_dns_recon_backup.json"):
             list_available_scan.append(scan)
+
+    if not list_available_scan:
+        return 0
+
+    loop_printing_available_scans = "\n".join(f". {project}" for project in list_available_scan) + "\n"
+
+    print("Selectionnez un des scans disponibles: \n")
+
+    selected_scan = get_input_choice(list_available_scan,while_available_answer=False,input_message=loop_printing_available_scans,error_message="Veuillez sélectionner un scan valide")
+
+    return selected_scan
+
+def choice_nmap_to_load(project_name):
+    print("----------------Weaponization----------------")
+    print("Choissisez le fichier à charger: ")
+
+    path = f"/crecerelle-project/utils/load/{project_name}"
+    existing_available_scan = os.listdir(path)
+
+    list_available_scan = []
+
+    for scan in existing_available_scan:
+        if os.path.exists(f"{path}/{scan}/nmap/{scan}-nmap.json"):
+            list_available_scan.append(scan)
+
+    if not list_available_scan:
+        return 0
 
     loop_printing_available_scans = "\n".join(f". {project}" for project in list_available_scan) + "\n"
 

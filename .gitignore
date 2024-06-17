@@ -1,3 +1,4 @@
 venv/
 rebuild_image.sh
 crecerelle-project/utils/load/
+test.py
