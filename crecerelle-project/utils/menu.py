@@ -90,6 +90,7 @@ def banner():
     print(f"{PURPLE}{BANNER}{NC}")
 
 def kill_chain_step_choice():
+
     print("Choisissez l'étape de la killchain voulue:")
 
     step_kill_chain = {"1":"Reconnaissance",
@@ -148,6 +149,7 @@ def choice_file_to_load(project_name):
     return selected_scan
 
 def choice_nmap_to_load(project_name):
+
     print("----------------Weaponization----------------")
     print("Choissisez le fichier à charger: ")
 

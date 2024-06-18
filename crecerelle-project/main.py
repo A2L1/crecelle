@@ -48,6 +48,7 @@ while not exit:
                 wipe_text(sleep=2)
             else:
                 project.launch_searchsploit_scan(answer_nmap_to_load)
+                wipe_text(3)
         case "@":
             exit = 1
 

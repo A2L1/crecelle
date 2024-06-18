@@ -113,4 +113,4 @@ class Project:
         
         formated_data = format_data(self.loaded_scan_path_from_nmap_scan)
 
-        launch_searchploit(data=formated_data)
+        launch_searchploit(data=formated_data,repertory_path=self.repertory_path,scan_name=self.loaded_scan_name_from_nmap_scan)

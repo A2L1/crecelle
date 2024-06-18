@@ -10,14 +10,6 @@ COPY crecerelle-project/ .
 
 RUN setcap cap_net_raw+eip $(which nmap)
 
-# RUN git clone https://github.com/ernw/nmap-parse-output.git
-
-# RUN wget https://bootstrap.pypa.io/get-pip.py
-
-# RUN python3 ./get-pip.py
-
-# RUN pip install lxml
-
 # CMD /bin/bash
 
 CMD python3 main.py
