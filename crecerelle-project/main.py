@@ -49,6 +49,8 @@ while not exit:
             else:
                 project.launch_searchsploit_scan(answer_nmap_to_load)
                 wipe_text(3)
+        case "4":
+            project.construct_pdf()
         case "@":
             exit = 1
 

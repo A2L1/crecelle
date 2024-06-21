@@ -96,6 +96,7 @@ def kill_chain_step_choice():
     step_kill_chain = {"1":"Reconnaissance",
                        "2":"Enumeration",
                        "3":"Weaponization",
+                       "4":"Report",
                        "@":"Sortie du programme"}
     print_step_kill_chain = "\n".join(f"{key}. {step_kill_chain[key]}" for key in step_kill_chain.keys()) + "\n"
 

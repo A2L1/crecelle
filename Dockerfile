@@ -4,6 +4,8 @@ RUN apt-get update -y && apt-get upgrade -y && apt-get -y install subfinder pyth
 
 RUN apt-get install -y exploitdb exploitdb-papers exploitdb-bin-sploits
 
+RUN apt install -y weasyprint
+
 WORKDIR /crecerelle-project
 
 COPY crecerelle-project/ .
