@@ -1,7 +1,7 @@
 #!/bin/python3
 
 from utils.project import Project
-from utils import wipe_text,create_or_load_project,kill_chain_step_choice,recon_on_ip_domain,banner,choice_load_or_input_ip,choice_file_to_load,choice_nmap_to_load
+from utils import wipe_text,create_or_load_project,kill_chain_step_choice,recon_on_ip_domain,banner,choice_load_or_input_ip,choice_file_to_load,choice_nmap_to_load,choice_between_searchsploit_and_manual_weaponization,choice_searchsploit_to_load,choice_ip_to_load,choice_port_to_load,choice_exploit_to_load
 
 print("\033c")
 
@@ -41,16 +41,33 @@ while not exit:
                     ip = input("Saisissez une IP: \n") # à factoriser et vérifier regex d'une ip
                     project.launch_nmap_scan(target_ip=ip,answer_load_or_input=answer_load_or_input)
         case "3":
-            answer_nmap_to_load = choice_nmap_to_load(project_name=project.name)
-            if not answer_nmap_to_load:
-                print("Pas de scan Nmap disponible")
-                print("Effectuez une partie Enumeration")
-                wipe_text(sleep=2)
-            else:
-                project.launch_searchsploit_scan(answer_nmap_to_load)
-                wipe_text(3)
+
+            answer_load_or_input = choice_between_searchsploit_and_manual_weaponization()
+            match answer_load_or_input:
+                case "1":
+
+                    answer_nmap_to_load = choice_nmap_to_load(project_name=project.name)
+                    if not answer_nmap_to_load:
+                        print("Pas de scan Nmap disponible")
+                        print("Effectuez une partie Enumeration")
+                        wipe_text(sleep=2)
+                    else:
+                        project.launch_searchsploit_scan(answer_nmap_to_load)
+                        wipe_text(3)
+                case "2":
+                    searschploit_scan = choice_searchsploit_to_load(project.name)
+                    if searschploit_scan:
+                        ip = choice_ip_to_load(project_name=project.name,scan=searschploit_scan)
+                        port = choice_port_to_load(project_name,searschploit_scan,ip)
+                        exploit = choice_exploit_to_load(project_name,searschploit_scan,ip,port)
+                        project.load_exploit(exploit)
+                    else:
+                        print("Pas de données searschploit disponibles")
+                    
+                    # wipe_text(2)
         case "4":
             project.construct_pdf()
+            wipe_text(2)
         case "@":
             exit = 1
 

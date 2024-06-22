@@ -1,4 +1,4 @@
-from utils import (get_ip_from_sub_domains,lauch_subfinder,launch_nmap_scan_list,launch_nmap_scan_input,format_data,launch_searchploit,build_html)
+from utils import (get_ip_from_sub_domains,lauch_subfinder,launch_nmap_scan_list,launch_nmap_scan_input,format_data,launch_searchploit,build_html,load_exploit_for_manual_config)
 import os
 import json
 
@@ -114,6 +114,9 @@ class Project:
         formated_data = format_data(self.loaded_scan_path_from_nmap_scan)
 
         launch_searchploit(data=formated_data,repertory_path=self.repertory_path,scan_name=self.loaded_scan_name_from_nmap_scan)
+
+    def load_exploit(self,exploit):
+        load_exploit_for_manual_config(exploit)
 
     def construct_pdf(self):
         build_html(self.name)
