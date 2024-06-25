@@ -1,7 +1,9 @@
 import json
 import os
 import subprocess
-
+import matplotlib.pyplot as plt
+import pandas as pd
+import seaborn as sns
 
 def build_dns_recon(path,file,scan):
 
@@ -36,12 +38,34 @@ def build_dns_recon(path,file,scan):
 def build_nmap_scan(path,file,scan):
     file_path = f"{path}/{scan}/nmap/{scan}-nmap.json"
 
+    build_graphics(path,scan,file_path)
+
     file.write(f"<h3>Nmap Vulners scan - {scan}</h3>\n")
 
+    score_graph = f"{path}/report/{scan}-cvss_score.png"
+    severity_graph = f"{path}/report/{scan}-severity_score.png"
+    score,severity = True,True
+
+    
     if os.path.exists(file_path):
         with open(file_path,'r') as d:
             data = json.load(d)
             file.write(f"<h4>Nmap Vulners scan IP/ports - {scan}</h4>\n")
+
+            if os.path.exists(score_graph):
+                file.write(f'<img src="{score_graph}">\n')
+                score = False
+
+            if os.path.exists(severity_graph):
+                file.write(f'<img src="{severity_graph}">\n')
+                severity = False
+
+            if score and severity:
+                file.write("<p>Pas de vulnérabilités à afficher dans un graphique</p>")
+            else:
+                file.write('<div class="page-break"></div>\n')
+
+            
 
             file.write("<table>\n")
             file.write("<tr>\n")
@@ -175,10 +199,7 @@ def build_for_each_scan(path,file,scan):
     build_dns_recon(path,file,scan)
     build_nmap_scan(path,file,scan)
     build_searchsploit_scan(path,file,scan)
-
-
-    
-
+  
 def build_from_all_scan(project_name,file):
     path = f"/crecerelle-project/utils/load/{project_name}"
     existing_available_scan = os.listdir(path)
@@ -239,6 +260,10 @@ def build_html(project_name):
         .page-break {
             page-break-after: always;
         }
+        img {
+            max-width: 100%;
+            height: auto;    
+        }
     </style>""")
     f.write('</head>\n<body>\n')
     f.write(f'<h1>{project_name}</h1>\n')
@@ -258,3 +283,114 @@ def build_html(project_name):
     else:
         print(f"{GREEN}PDF généré{COLOR_OFF}")
         print(f"{BLUE}le fichier existe: {pdf_path}{COLOR_OFF}")
+
+def get_data(filename):
+    with open(filename, "r") as f:
+        data = json.load(f)
+    return data
+
+def build_dataframe(data):
+    df = pd.DataFrame()
+    for ip, ip_data in data.items():
+        for port_data in ip_data["ports"]:
+            port = port_data["port"]
+            service = port_data["service"]
+            for vuln in port_data["vulnerabilities"]:
+                new_row = {
+                    "ip": ip,
+                    "port_id": port["port_id"],
+                    "port_protocol": port["protocol"],
+                    "port_state": port["state"],
+                    "service_name": service["name"],
+                    "service_product": service["product"],
+                    "service_version": service["version"],
+                    "vulnerability_is_exploit": vuln["is_exploit"],
+                    "vulnerability_type": vuln["type"],
+                    "vulnerability_id": vuln["id"],
+                    "vulnerability_cvss": vuln["cvss"]
+                }
+                df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+
+    if "vulnerability_is_exploit" in df.columns:
+        df = df[df["vulnerability_is_exploit"] == "true"]
+
+        df = df.sort_values(by="vulnerability_cvss", ascending=True)
+        df['vulnerability_cvss'] = df['vulnerability_cvss'].astype(float)
+
+        def __cvss_to_severity(cvss_score):
+            if cvss_score <= 3.9:
+                return "low"
+            if cvss_score <= 6.9:
+                return "medium"
+            if cvss_score <= 8.9:
+                return "high"
+            return "critical"
+
+        df["severity"] = df["vulnerability_cvss"].apply(__cvss_to_severity)
+
+    return df
+
+def generate_countplot_scores(nmap_df, palette,path,scan):
+    plt.figure(figsize=(10, 6))
+    bar_plot = sns.countplot(data=nmap_df, x="vulnerability_cvss", hue="severity", palette=palette)
+    plt.xticks(rotation=90)
+    plt.xlabel("Score CVSS")
+    plt.ylabel("Nombre de vulnérabilités")
+    plt.title("Distribution of Vulnerabilities by CVSS Score")
+
+    graph_path = f"{path}/report/{scan}-cvss_score.png"
+    bar_plot.get_figure().savefig(graph_path)
+
+def generate_countplot_severity(nmap_df, palette,path,scan):
+    plt.figure(figsize=(10, 6))
+    count_plot = sns.countplot(data=nmap_df, x="severity", hue="severity", palette=palette,
+                               order=["low", "medium", "high", "critical"])
+    plt.xlabel("Severity")
+    plt.ylabel("Number of vulnerabilities")
+    plt.title("Distribution of vulnerabilities by severity")
+
+    graph_path = f"{path}/report/{scan}-severity_score.png"
+
+    count_plot.get_figure().savefig(graph_path)
+
+
+def count_vuln_searchsploit(data):
+    # get all the adress ip
+    ip_list = []
+    for ip, ip_data in data.items():
+        ip_list.append(ip)
+
+    # get ports for each ip
+    port_list = {}
+    for ip, ip_data in data.items():
+        port_list[ip] = []
+        for port, port_data in ip_data.items():
+            port_list[ip].append(port)
+
+    # get number of 'Exploit' for each ip and port
+    for ip, ip_ports in port_list.items():
+        port_list[ip] = 0
+        for port in ip_ports:
+            amount_of_vuln = len(data[ip][port]['Exploit'])
+            port_list[ip] += amount_of_vuln
+
+    return port_list
+
+def build_graphics(dir_path,scan,file_path):
+
+    nmap = get_data(file_path)
+    nmap_df = build_dataframe(nmap)
+
+    base_palette = {
+        "low": "#127da1",
+        "medium": "#2ca112",
+        "high": "#fcba03",
+        "critical": "#c2100a"
+    }
+
+    if "vulnerability_is_exploit" in nmap_df.columns:
+        generate_countplot_scores(nmap_df, base_palette,dir_path,scan)
+        generate_countplot_severity(nmap_df, base_palette,dir_path,scan)
+
+    # searchsploit = get_data("searchsploit.json")
+    # port_list = count_vuln_searchsploit(searchsploit)

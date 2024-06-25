@@ -67,7 +67,7 @@ while not exit:
                     # wipe_text(2)
         case "4":
             project.construct_pdf()
-            wipe_text(2)
+            # wipe_text(2)
         case "@":
             exit = 1
 
