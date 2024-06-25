@@ -1,9 +1,9 @@
 import json
 import os
 import subprocess
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt # type: ignore
 import pandas as pd
-import seaborn as sns
+import seaborn as sns # type: ignore
 
 def build_dns_recon(path,file,scan):
 
@@ -394,6 +394,3 @@ def build_graphics(dir_path,scan,file_path):
     if "vulnerability_is_exploit" in nmap_df.columns:
         generate_countplot_scores(nmap_df, base_palette,dir_path,scan)
         generate_countplot_severity(nmap_df, base_palette,dir_path,scan)
-
-    # searchsploit = get_data("searchsploit.json")
-    # port_list = count_vuln_searchsploit(searchsploit)
