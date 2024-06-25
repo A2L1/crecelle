@@ -232,6 +232,9 @@ def build_html(project_name):
     f.write('<!DOCTYPE html>\n')
     f.write(f'<html>\n<head>\n<meta charset="UTF-8">\n<title>{project_name}</title>\n')
     f.write("""<style>
+        h1{
+            text-align:center;
+        }    
         table {
             width: 100%;
             border-collapse: collapse;
