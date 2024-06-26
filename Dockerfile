@@ -4,7 +4,7 @@ RUN apt-get update -y && apt-get upgrade -y && apt-get -y install subfinder pyth
 
 RUN apt-get install -y exploitdb exploitdb-papers exploitdb-bin-sploits
 
-RUN apt install -y weasyprint
+RUN apt install -y weasyprint vim
 
 RUN wget https://bootstrap.pypa.io/get-pip.py
 
@@ -17,6 +17,8 @@ WORKDIR /crecerelle-project
 COPY crecerelle-project/ .
 
 RUN setcap cap_net_raw+eip $(which nmap)
+
+RUN echo 'cd ~' >> /root/.bashrc
 
 # CMD /bin/bash
 
